@@ -2,7 +2,6 @@ import logging
 import os
 
 import disnake
-from bot_base import BotBase
 
 from slk import SLK
 
@@ -32,6 +31,13 @@ bot = SLK(
 @bot.listen("on_ready")
 async def on_ready():
     log.info("Ready")
+
+
+@bot.listen("on_member_join")
+async def on_member_join(member: disnake.Member):
+    if member.id in bot.team_members:
+        role = member.guild.get_role(963306655657898004)
+        await member.add_roles(role, reason="Team member.")
 
 
 if __name__ == "__main__":
