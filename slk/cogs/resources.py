@@ -60,6 +60,7 @@ class ResourceCog(commands.Cog):
             )
 
         await inter.send(embed=embed, ephemeral=True)
+        log.info("Listed all resources for %s", inter.user.display_name)
 
     @resources.autocomplete("skill")
     async def skill_autocomplete(
@@ -78,6 +79,7 @@ class ResourceCog(commands.Cog):
         pass
 
     @add.sub_command(name="resource")
+    @commands.has_role(963306655657898004)
     async def add_resource(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -135,12 +137,16 @@ class ResourceCog(commands.Cog):
             f"Thanks! I have added that as a resource under __{skill}__.",
             ephemeral=True,
         )
+        log.info(
+            "New resource added by %s, category %s", inter.user.display_name, skill
+        )
 
     @commands.slash_command()
     async def delete(self, inter: disnake.ApplicationCommandInteraction):
         pass
 
     @delete.sub_command(name="resource")
+    @commands.has_role(963306655657898004)
     async def delete_resource(
         self,
         inter: disnake.ApplicationCommandInteraction,
@@ -198,6 +204,11 @@ class ResourceCog(commands.Cog):
         sent_message: disnake.InteractionMessage = await inter.original_message()
         await sent_message.edit(
             f"I have deleted `{deletion_count}` resources for you.", components=None
+        )
+        log.info(
+            "Deleted %s resources by command of %s",
+            deletion_count,
+            inter.user.display_name,
         )
 
 

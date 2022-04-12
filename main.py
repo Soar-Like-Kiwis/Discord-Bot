@@ -2,6 +2,7 @@ import logging
 import os
 
 import disnake
+from disnake.ext import commands
 
 from slk import SLK
 
@@ -9,7 +10,7 @@ log = logging.getLogger(__name__)
 logging.basicConfig(
     level=logging.INFO,
     datefmt="%I:%M:%S %p %d/%m/%Y",
-    format="%(levelname)-7s | %(asctime)s | %(filename)12s:%(funcName)-12s | %(message)s",
+    format="%(levelname)-7s | %(asctime)s | %(filename)15s:%(funcName)-25s | %(message)s",
 )
 gateway_logger = logging.getLogger("disnake.gateway")
 gateway_logger.setLevel(logging.WARNING)
@@ -29,6 +30,19 @@ bot = SLK(
 )
 
 
+def resolve_name(inter: disnake.ApplicationCommandInteraction):
+    base_name = inter.data.name
+    if inter.application_command and isinstance(
+        inter.application_command, commands.SubCommand
+    ):
+        base_name += f" {inter.application_command.name}"
+
+    return base_name
+
+
+bot.resolve_name = resolve_name
+
+
 @bot.listen("on_ready")
 async def on_ready():
     log.info("Ready")
@@ -42,9 +56,25 @@ async def on_member_join(member: disnake.Member):
 
 
 @bot.event
-async def on_slash_command_error(inter: disnake.Interaction, exception):
-    await inter.send("Looks like something went wrong :shrug:", ephemeral=True)
-    raise exception
+async def on_slash_command_error(inter: disnake.Interaction, error):
+    if isinstance(error, commands.errors.MissingRole):
+        assert isinstance(inter, disnake.ApplicationCommandInteraction)
+        role = inter.guild.get_role(error.missing_role)
+        await inter.send(
+            f"You need the `{role.name}` role to run this command :shrug:",
+            ephemeral=True,
+        )
+        log.error(
+            "%s tried to run '%s', however the lacked the Role(id=%s, name='%s')",
+            inter.user.display_name,
+            bot.resolve_name(inter),
+            role.id,
+            role.name,
+        )
+
+    else:
+        await inter.send("Looks like something went wrong :shrug:", ephemeral=True)
+        raise error
 
 
 if __name__ == "__main__":
