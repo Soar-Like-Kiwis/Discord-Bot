@@ -1,7 +1,10 @@
 import logging
 import os
 
+import disnake
 from bot_base import BotBase
+
+from slk import SLK
 
 log = logging.getLogger(__name__)
 logging.basicConfig(
@@ -16,7 +19,14 @@ client_logger.setLevel(logging.WARNING)
 http_logger = logging.getLogger("disnake.http")
 http_logger.setLevel(logging.WARNING)
 
-bot = BotBase(leave_db=True, command_prefix="slk.")
+bot = SLK(
+    command_prefix="slk.",
+    case_insensitive=True,
+    strip_after_prefix=True,
+    load_builtin_commands=True,
+    intents=disnake.Intents.all(),
+    description="Powering Soar Like Kiwi's",
+)
 
 
 @bot.listen("on_ready")
