@@ -30,19 +30,6 @@ bot = SLK(
 )
 
 
-def resolve_name(inter: disnake.ApplicationCommandInteraction):
-    base_name = inter.data.name
-    if inter.application_command and isinstance(
-        inter.application_command, commands.SubCommand
-    ):
-        base_name += f" {inter.application_command.name}"
-
-    return base_name
-
-
-bot.resolve_name = resolve_name
-
-
 @bot.listen("on_ready")
 async def on_ready():
     log.info("Ready")
@@ -67,7 +54,7 @@ async def on_slash_command_error(inter: disnake.Interaction, error):
         log.error(
             "%s tried to run '%s', however the lacked the Role(id=%s, name='%s')",
             inter.user.display_name,
-            bot.resolve_name(inter),
+            inter.application_command.qualified_name,
             role.id,
             role.name,
         )
