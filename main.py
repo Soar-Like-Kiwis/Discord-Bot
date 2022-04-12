@@ -24,6 +24,7 @@ bot = SLK(
     strip_after_prefix=True,
     load_builtin_commands=True,
     intents=disnake.Intents.all(),
+    test_guilds=[963306196792639529],
     description="Powering Soar Like Kiwi's",
 )
 
@@ -40,5 +41,12 @@ async def on_member_join(member: disnake.Member):
         await member.add_roles(role, reason="Team member.")
 
 
+@bot.event
+async def on_slash_command_error(inter: disnake.Interaction, exception):
+    await inter.send("Looks like something went wrong :shrug:", ephemeral=True)
+    raise exception
+
+
 if __name__ == "__main__":
+    bot.load_extension("slk.cogs.resources")
     bot.run(os.environ["TOKEN"])
