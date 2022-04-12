@@ -32,7 +32,7 @@ bot = SLK(
 
 @bot.listen("on_ready")
 async def on_ready():
-    log.info("Ready")
+    log.info("Main: Ready")
 
 
 @bot.listen("on_member_join")
@@ -40,6 +40,11 @@ async def on_member_join(member: disnake.Member):
     if member.id in bot.team_members:
         role = member.guild.get_role(963306655657898004)
         await member.add_roles(role, reason="Team member.")
+        log.info(
+            "Gave Role(id=963306655657898004, name=%s) to %s as they are registered members.",
+            role.name,
+            member.display_name,
+        )
 
 
 @bot.event
