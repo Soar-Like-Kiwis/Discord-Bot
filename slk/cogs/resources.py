@@ -60,7 +60,7 @@ class ResourceCog(commands.Cog):
             )
 
         await inter.send(embed=embed, ephemeral=True)
-        log.info("Listed all resources for %s", inter.user.display_name)
+        log.info("Listed all resources by request of %s", inter.user.display_name)
 
     @resources.autocomplete("skill")
     async def skill_autocomplete(
