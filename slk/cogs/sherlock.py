@@ -42,7 +42,7 @@ class SherlockCog(commands.Cog):
             file=disnake.File(buffer, filename="results.md"),
         )
         log.info(
-            "%s requested Sherlock for the username %s",
+            "%s requested sherlock for the username %s",
             inter.user.display_name,
             username,
         )
