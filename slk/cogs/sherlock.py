@@ -39,7 +39,7 @@ class SherlockCog(commands.Cog):
         msg = await inter.original_message()
         await msg.edit(
             "Check the file!",
-            file=disnake.File(buffer, filename="results.md"),
+            file=disnake.File(buffer, filename=f"Sherlock {username}.md"),
         )
         log.info(
             "%s requested sherlock for the username %s",
