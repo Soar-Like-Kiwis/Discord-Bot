@@ -71,4 +71,5 @@ async def on_slash_command_error(inter: disnake.Interaction, error):
 
 if __name__ == "__main__":
     bot.load_extension("slk.cogs.resources")
+    bot.load_extension("slk.cogs.sherlock")
     bot.run(os.environ["TOKEN"])
