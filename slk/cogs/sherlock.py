@@ -1,9 +1,9 @@
 import logging
 import os
-from io import BytesIO
 from typing import TYPE_CHECKING
 
 import disnake
+from bot_base.paginators.disnake_paginator import DisnakePaginator
 from disnake.ext import commands
 
 from slk.cog_utils.sherlock import Sherlock
@@ -34,13 +34,15 @@ class SherlockCog(commands.Cog):
         """Lookup a username using Sherlock."""
         await inter.send("Working on it!", ephemeral=True)
         result = await self.sherlock.request(username)
-        sorted_results = "\n".join([r for r in result])
-        buffer = BytesIO(sorted_results.encode("utf-8"))
-        msg = await inter.original_message()
-        await msg.edit(
-            "Check the file!",
-            file=disnake.File(buffer, filename=f"Sherlock {username}.md"),
+
+        paginator: DisnakePaginator = DisnakePaginator(
+            15,
+            result,
+            page_formatter=lambda paginator, page_items, page_number: disnake.Embed(
+                description="\n".join(item for item in page_items)
+            ).set_footer(text=f"Page {page_number}/{paginator.total_pages}"),
         )
+        await paginator.start(inter)
         log.info(
             "%s requested sherlock for the username %s",
             inter.user.display_name,
