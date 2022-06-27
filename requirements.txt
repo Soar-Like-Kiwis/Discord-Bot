@@ -3,7 +3,7 @@ aiosignal==1.2.0
 anyio==3.5.0
 async-timeout==4.0.2
 attrs==21.4.0
-Bot-Base==1.4.4
+Bot-Base==1.5.4
 certifi==2021.10.8
 charset-normalizer==2.0.12
 disnake==2.4.0
